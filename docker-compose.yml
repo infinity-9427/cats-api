@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # MongoDB Database
   mongodb:
@@ -33,7 +31,7 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=mongodb://admin:password123@mongodb:27017/cats_api?authSource=admin
-      - BASE_URL=https://thecatapi.com
+      - BASE_URL=https://api.thecatapi.com/v1
       - CATS_API_KEY=live_JBT0Ah0Nt12iyl2IpjQVLDWjcLk0GQwf4zI9wBMfmfejKmcC31mOJp4yJz5TsOUP
       - SECRET_KEY=your-secret-key
       - ALGORITHM=HS256

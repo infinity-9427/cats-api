@@ -1,5 +1,4 @@
-# Use Python 3.11 slim image as base
-FROM python:3.11-slim
+FROM python:3.12.11-alpine3.22
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -8,23 +7,27 @@ ENV PYTHONUNBUFFERED=1
 # Set work directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        build-essential \
+# Install system dependencies for Alpine
+RUN apk update \
+    && apk add --no-cache \
+        build-base \
         curl \
-    && rm -rf /var/lib/apt/lists/*
+        gcc \
+        musl-dev \
+        libffi-dev \
+        openssl-dev \
+    && rm -rf /var/cache/apk/*
 
 # Install Python dependencies
-COPY pyproject.toml .
+COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install fastapi uvicorn[standard] motor pymongo bcrypt python-jose[cryptography] httpx pytest pytest-asyncio python-multipart
+    && pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
 COPY . .
 
-# Create a non-root user
-RUN adduser --disabled-password --gecos '' appuser && chown -R appuser:appuser /app
+# Create a non-root user for Alpine
+RUN adduser -D -s /bin/sh appuser && chown -R appuser:appuser /app
 USER appuser
 
 # Expose port
@@ -34,5 +37,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-# Run the application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Run the application (without --reload for production)
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

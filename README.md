@@ -1,50 +1,52 @@
 # 🐱 Cats API - Backend Application
 
-A REST API developed with FastAPI to manage cat breed information and users, integrated with [The Cat API](https://thecatapi.com/) and MongoDB database.
+REST API developed with **Python FastAPI** and **MongoDB** to manage cat breed information and users, integrated with [The Cat API](https://thecatapi.com/).
 
-## 🚀 Features
+## 📋 Project Requirements
 
-- **RESTful API** with FastAPI
-- **MongoDB database** for user management
-- **The Cat API integration** for breed information
-- **JWT authentication** for users
-- **Clean architecture** following SOLID principles
-- **Unit testing** with pytest
-- **Containerization** with Docker and Docker Compose
-- **Automatic documentation** with Swagger UI
+This project implements a BackEnd with **2 main controllers**:
 
-## 🛠️ Technologies Used
+### 🐱 **Cats Controller**
+Connected to the public API https://thecatapi.com/ with the following actions:
+- `GET /breeds` - List of cat breeds
+- `GET /breeds/:breed_id` - Specific breed by ID
+- `GET /breeds/search` - Search breeds by parameters
 
-### Backend Framework
-- **FastAPI** - Modern, fast web framework for Python
-- **Uvicorn** - ASGI server for FastAPI
-- **Pydantic** - Data validation and serialization
+### 👤 **Users Controller** 
+User management with MongoDB with the following actions:
+- `GET /user` - List of users
+- `POST /user` - Create user (auto-generated unique username)
+- `GET /login` - Login validation against MongoDB
+- `POST /login` - Login with JSON body (REST standard)
 
-### Database
-- **MongoDB** - NoSQL database
-- **Motor** - Async MongoDB driver for Python
-- **PyMongo** - Official MongoDB driver
+### 🔐 **Authentication System**
+Complete JWT-based authentication system:
+- **JWT Token Generation** - Automatic token creation on login
+- **Token Validation** - Secure token verification
+- **Protected Endpoints** - Authentication dependencies ready for use
+- **Utility Endpoints** - Token verification and user information
+- **Security Features** - Password hashing, token expiration, error handling
 
-### Authentication and Security
-- **JWT (JSON Web Tokens)** - For authentication
-- **bcrypt** - For password hashing
-- **python-jose** - For JWT handling
+## 🔧 Technical Features
 
-### External Integration
-- **httpx** - Async HTTP client for The Cat API integration
+- **Framework**: Python FastAPI
+- **Database**: MongoDB
+- **Architecture**: Clean Architecture, SOLID, Repository Pattern
+- **Security**: Hashed passwords with bcrypt, JWT tokens
+- **Authentication**: Complete JWT system with Bearer token support
+- **Testing**: Unit tests with pytest + custom Make commands
+- **Containerization**: Docker and Docker Compose
+- **Documentation**: Automatic Swagger UI + Authentication Guide
 
-### Testing
-- **pytest** - Testing framework
-- **pytest-asyncio** - For async testing
-
-### Containerization
-- **Docker** - For containerization
-- **Docker Compose** - For service orchestration
+## 🔑 The Cat API Key
+```
+your_api_key
+```
 
 ## 📋 Prerequisites
 
-- Docker
-- Docker Compose
+- **Docker** (recommended)
+- **Docker Compose** (recommended)
 - Python 3.11+ (for local development)
 
 ## 🚀 Installation and Setup
@@ -55,13 +57,7 @@ git clone <repository-url>
 cd cats-api
 ```
 
-### 2. Configure environment variables
-```bash
-cp .env.example .env
-# Edit .env with your configurations
-```
-
-### 3. Run with Docker Compose
+### 2. Run with Docker Compose (Recommended)
 ```bash
 # Build and run all services
 docker-compose up --build
@@ -71,26 +67,79 @@ docker-compose up -d
 
 # View logs
 docker-compose logs -f cats-api
+
+# Stop services
+docker-compose down
 ```
 
-### 4. Access services
+### 3. Access services
 - **API**: http://localhost:8000
-- **Documentation**: http://localhost:8000/docs
-- **MongoDB Express**: http://localhost:8081 (admin/admin)
+- **Swagger Documentation**: http://localhost:8000/docs
+- **ReDoc Documentation**: http://localhost:8000/redoc
+
+### 4. Quick Test (Optional)
+```bash
+# Verify everything works - choose your preferred method
+make test-quick    # Custom command (recommended)
+./run_tests.sh     # Shell script (alternative)
+```
+
+## 📊 Useful Docker Commands
+
+```bash
+# View active containers
+docker ps
+
+# View logs of a specific service
+docker-compose logs -f mongodb
+
+# Access MongoDB container
+docker exec -it cats-api-mongodb mongosh cats_api
+
+# Rebuild only the API
+docker-compose build cats-api
+
+# Restart a service
+docker-compose restart cats-api
+
+# Clean volumes (⚠️ deletes data)
+docker-compose down -v
+```
+
+## 👥 Default Users
+
+The system includes pre-configured test users:
+
+### Admin User
+- **Username**: `admin`
+- **Password**: `admin123`
+- **Email**: `admin@example.com`
+
+### Test User
+- **Username**: `john.doe`
+- **Password**: `password123`
+- **Email**: `john.doe@example.com`
+
+## 🔐 Password Security
+
+- Passwords are stored **hashed** using **bcrypt**
+- **Never** store passwords in plain text
+- Hash is generated automatically when creating users
+- Hash example: `$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewVyLrId4Qa8/8IS`
 
 ## 📚 API Endpoints
 
-### 🏠 General
+### 🏠 General Endpoints
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/` | Home page |
 | GET | `/health` | API health status |
 
-### 🐱 Cats Controller
+### 🐱 Cats Controller (`/api/v1/breeds`)
 
-#### Get all breeds
-```http
-GET /breeds
+#### 1. GET /breeds - List of breeds
+```bash
+curl -X GET "http://localhost:8000/api/v1/breeds"
 ```
 
 **Successful response (200)**:
@@ -99,36 +148,17 @@ GET /breeds
   {
     "id": "abys",
     "name": "Abyssinian",
-    "description": "The Abyssinian is easy to care for, and a joy to have in your home...",
-    "temperament": "Active, Energetic, Independent, Intelligent, Gentle",
+    "description": "The Abyssinian is easy to care for...",
+    "temperament": "Active, Energetic, Independent",
     "origin": "Egypt",
-    "life_span": "14 - 15",
-    "weight": {
-      "imperial": "7  -  10",
-      "metric": "3 - 5"
-    },
-    "wikipedia_url": "https://en.wikipedia.org/wiki/Abyssinian_cat",
-    "image": {
-      "id": "0XYvRd7oD",
-      "width": 1204,
-      "height": 1445,
-      "url": "https://cdn2.thecatapi.com/images/0XYvRd7oD.jpg"
-    }
+    "life_span": "14 - 15"
   }
 ]
 ```
 
-#### Get breed by ID
-```http
-GET /breeds/{breed_id}
-```
-
-**Parameters**:
-- `breed_id` (string): Breed ID
-
-**Example**:
+#### 2. GET /breeds/:breed_id - Specific breed
 ```bash
-curl -X GET "http://localhost:8000/breeds/abys"
+curl -X GET "http://localhost:8000/api/v1/breeds/abys"
 ```
 
 **Successful response (200)**:
@@ -138,242 +168,341 @@ curl -X GET "http://localhost:8000/breeds/abys"
   "name": "Abyssinian",
   "description": "The Abyssinian is easy to care for...",
   "temperament": "Active, Energetic, Independent",
-  "origin": "Egypt",
-  "life_span": "14 - 15",
-  "weight": {
-    "imperial": "7  -  10",
-    "metric": "3 - 5"
-  }
+  "origin": "Egypt"
 }
 ```
 
-#### Search breeds
-```http
-GET /breeds/search
-```
-
-**Query parameters**:
-- `q` (string): Search term
-- `limit` (int, optional): Result limit (default: 10)
-- `page` (int, optional): Page number (default: 0)
-
-**Example**:
+#### 3. GET /breeds/search - Search breeds
 ```bash
-curl -X GET "http://localhost:8000/breeds/search?q=persian&limit=5"
+curl -X GET "http://localhost:8000/api/v1/breeds/search?q=persian&limit=5"
 ```
 
-**Successful response (200)**:
-```json
-{
-  "results": [
-    {
-      "id": "pers",
-      "name": "Persian",
-      "description": "The Persian cat is a long-haired breed...",
-      "temperament": "Affectionate, Loyal, Docile, Patient, Gentle, Quiet"
-    }
-  ],
-  "total": 1,
-  "page": 0,
-  "limit": 5
-}
+**Parameters**:
+- `q` (string): Search term
+- `limit` (int): Result limit
+
+### 👤 Users Controller (`/api/v1`)
+
+#### 1. GET /user - List of users
+```bash
+curl -X GET "http://localhost:8000/api/v1/user"
 ```
-
-### 👤 Users Controller
-
-#### Get all users
-```http
-GET /users
-```
-
-**Required headers**:
-- `Authorization: Bearer <token>`
 
 **Successful response (200)**:
 ```json
 [
   {
-    "id": "64a1234567890abcdef12345",
-    "username": "john_doe",
-    "email": "john@example.com",
+    "id": "507f1f77bcf86cd799439011",
     "first_name": "John",
     "last_name": "Doe",
-    "created_at": "2023-07-10T10:30:00Z",
-    "updated_at": "2023-07-10T10:30:00Z"
+    "username": "john.doe",
+    "email": "john.doe@example.com",
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T10:30:00Z"
   }
 ]
 ```
 
-#### Create user
-```http
-POST /users
-```
-
-**Body**:
-```json
-{
-  "first_name": "John",
-  "last_name": "Doe",
-  "email": "john@example.com",
-  "password": "securepassword123"
-}
+#### 2. POST /user - Create user
+```bash
+curl -X POST "http://localhost:8000/api/v1/user" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "first_name": "María",
+    "last_name": "García",
+    "password": "mipassword123",
+    "email": "maria.garcia@example.com"
+  }'
 ```
 
 **Successful response (201)**:
 ```json
 {
-  "id": "64a1234567890abcdef12345",
-  "username": "john_doe",
-  "email": "john@example.com",
-  "first_name": "John",
-  "last_name": "Doe",
-  "created_at": "2023-07-10T10:30:00Z",
-  "message": "User created successfully"
+  "id": "507f1f77bcf86cd799439012",
+  "first_name": "María",
+  "last_name": "García",
+  "username": "maria.garcia",
+  "email": "maria.garcia@example.com",
+  "created_at": "2024-01-15T10:35:00Z",
+  "updated_at": "2024-01-15T10:35:00Z"
 }
 ```
 
-#### Login
-```http
-POST /login
+> **📝 Note**: The `username` is automatically generated as `firstname.lastname` and guaranteed to be unique. If it already exists, a number is added (e.g., `maria.garcia1`).
+
+#### 3. Login Endpoints
+
+##### GET /login - Login validation (Query Parameters)
+```bash
+curl -X GET "http://localhost:8000/api/v1/login?username=maria.garcia&password=mipassword123"
 ```
 
-**Body**:
-```json
-{
-  "username": "john_doe",
-  "password": "securepassword123"
-}
+##### POST /login - Login validation (JSON Body - Recommended)
+```bash
+curl -X POST "http://localhost:8000/api/v1/login" \
+  -H "Content-Type: application/json" \
+  -d '{"username": "maria.garcia", "password": "mipassword123"}'
 ```
 
 **Successful response (200)**:
 ```json
 {
-  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "token_type": "bearer",
-  "expires_in": 1800,
   "user": {
-    "id": "64a1234567890abcdef12345",
-    "username": "john_doe",
-    "email": "john@example.com",
-    "first_name": "John",
-    "last_name": "Doe"
+    "id": "507f1f77bcf86cd799439012",
+    "first_name": "María",
+    "last_name": "García",
+    "username": "maria.garcia",
+    "email": "maria.garcia@example.com"
   }
 }
 ```
 
-## 🔧 Configuration
+**Error response (401)**:
+```json
+{
+  "detail": "Invalid username or password"
+}
+```
 
-### Environment Variables
+### 🔐 Authentication Endpoints (`/api/v1/auth`)
 
-```env
-# Database
-DATABASE_URL=mongodb://admin:password123@mongodb:27017/cats_api?authSource=admin
+#### Token Verification (Optional Auth)
+```bash
+# With token
+curl -H "Authorization: Bearer <your-token>" "http://localhost:8000/api/v1/auth/verify"
 
-# External API
-BASE_URL=https://thecatapi.com
-CATS_API_KEY=your_api_key_here
+# Without token
+curl "http://localhost:8000/api/v1/auth/verify"
+```
 
-# JWT
-SECRET_KEY=your-secret-key-change-this-in-production
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
+#### Get Current User (Requires Auth)
+```bash
+curl -H "Authorization: Bearer <your-token>" "http://localhost:8000/api/v1/auth/me"
+```
 
-# MongoDB
-MONGO_INITDB_ROOT_USERNAME=admin
-MONGO_INITDB_ROOT_PASSWORD=password123
-MONGO_INITDB_DATABASE=cats_api
+#### Token Information
+```bash
+curl -H "Authorization: Bearer <your-token>" "http://localhost:8000/api/v1/auth/token-info"
+```
+
+> **📚 For complete authentication documentation, see [AUTHENTICATION.md](AUTHENTICATION.md)**
 ```
 
 ## 🧪 Testing
 
-### Run unit tests
+### 🚀 Custom Commands (Recommended)
 ```bash
-# With Docker
-docker-compose exec cats-api pytest
+# Full test suite with coverage
+make test
 
-# Local
+# Quick tests (faster, no coverage)
+make test-quick
+
+# Detailed coverage report
+make test-cov
+
+# Show all available commands
+make help
+```
+
+### 🔧 Alternative Commands
+```bash
+# Shell script (traditional approach)
+./run_tests.sh
+
+# Direct pytest commands
+pytest tests/ --cov=app --cov-report=term-missing
+
+# Docker testing
+docker-compose exec cats-api pytest tests/
+
+# Quick tests only
 pytest tests/
 
-# With coverage
-pytest --cov=app tests/
+# Run specific test file
+pytest tests/test_user_service.py -v
 ```
 
-### Testing examples
+### ✅ Expected Output
 ```bash
-# Test health endpoint
-curl -X GET "http://localhost:8000/health"
+Running tests...
+84 passed in ~22s
 
-# Test user creation
-curl -X POST "http://localhost:8000/users" \
-  -H "Content-Type: application/json" \
-  -d '{"first_name":"Test","last_name":"User","email":"test@example.com","password":"test123"}'
-
-# Test login
-curl -X POST "http://localhost:8000/login" \
-  -H "Content-Type: application/json" \
-  -d '{"username":"test_user","password":"test123"}'
+Coverage Report:
+TOTAL: 497 statements, 92% coverage
+✅ Tests complete - workspace clean!
 ```
 
-## 🏗️ Architecture
+### � What's Tested
+- **84 tests total** covering all endpoints
+- **User management** (creation, authentication)
+- **Cat breeds** (external API integration)
+- **JWT authentication** (token generation/validation)
+- **Error handling** and edge cases
+- **Database operations** (MongoDB)
+
+**Note**: Tests avoid generating HTML reports to keep workspace clean.
+
+### 📚 Quick Reference
+| Command | Purpose | Time |
+|---------|---------|------|
+| `make test` | Full test suite + coverage | ~23s |
+| `make test-quick` | Quick tests only | ~18s |
+| `make test-cov` | Detailed coverage report | ~25s |
+| `./run_tests.sh` | Shell script alternative | ~23s |
+| `pytest tests/test_user_service.py -v` | Specific test file | ~3s |
+
+## 🔧 Troubleshooting
+
+### Problem: API doesn't respond
+```bash
+# Check that containers are running
+docker ps
+
+# Review API logs
+docker-compose logs cats-api
+
+# Restart services
+docker-compose restart
+```
+
+### Problem: MongoDB connection error
+```bash
+# Check MongoDB status
+docker-compose logs mongodb
+
+# Check connectivity
+docker exec -it cats-api-mongodb mongosh --eval "db.adminCommand('ping')"
+
+# Restart MongoDB
+docker-compose restart mongodb
+```
+
+### Problem: 500 error on user endpoints
+- **Common cause**: Problem with ObjectId to string conversion
+- **Solution**: Verify that the `_id` field is converted correctly in the repository
+
+### Problem: Tests fail
+```bash
+# Clean Python cache
+find . -type d -name "__pycache__" -exec rm -rf {} +
+
+# Reinstall dependencies
+pip install -r requirements.txt
+
+# Run tests with more detail
+pytest -v -s
+```
+
+### Problem: Ports occupied
+```bash
+# Check what's using port 8000
+lsof -i :8000
+
+# Change port in docker-compose.yml
+# ports:
+#   - "8001:8000"  # host_port:container_port
+```
+
+## 📋 Complete Usage Examples
+
+### 1. Complete user workflow
+```bash
+# 1. Create a new user
+curl -X POST "http://localhost:8000/api/v1/user" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "first_name": "Ana",
+    "last_name": "Martínez", 
+    "password": "mipassword456",
+    "email": "ana.martinez@email.com"
+  }'
+
+# Response: {"id":"...","username":"ana.martinez",...}
+
+# 2. Login with the created user
+curl -X GET "http://localhost:8000/api/v1/login?username=ana.martinez&password=mipassword456"
+
+# Response: {"access_token":"...","user":{...}}
+
+# 3. List all users
+curl -X GET "http://localhost:8000/api/v1/user"
+```
+
+### 2. Explore cat breeds
+```bash
+# 1. View all available breeds
+curl -X GET "http://localhost:8000/api/v1/breeds"
+
+# 2. Search for a specific breed
+curl -X GET "http://localhost:8000/api/v1/breeds/search?q=maine"
+
+# 3. Get breed details
+curl -X GET "http://localhost:8000/api/v1/breeds/mcoo"  # Maine Coon
+```
+
+### 3. Authentication testing
+```bash
+# Correct login
+curl -X GET "http://localhost:8000/api/v1/login?username=admin&password=admin123"
+
+# Incorrect login (should return 401)
+curl -X GET "http://localhost:8000/api/v1/login?username=admin&password=wrong"
+```
+
+## 🏗️ Project Architecture
 
 The project follows **Clean Architecture** and **SOLID** principles:
 
 ```
 app/
-├── controllers/          # REST controllers
-│   ├── cats_controller.py
-│   └── users_controller.py
-├── services/            # Business logic
-│   ├── cats_service.py
-│   ├── users_service.py
-│   └── auth_service.py
-├── models/              # Data models
-│   ├── cat_models.py
-│   └── user_models.py
-├── repositories/        # Data access
-│   ├── cats_repository.py
-│   └── users_repository.py
-├── utils/              # Utilities
-│   ├── database.py
-│   └── security.py
-└── main.py             # Entry point
+├── controllers/         # REST controllers
+│   ├── cat_controller.py      # 🐱 Cats controller
+│   └── user_controller.py     # 👤 Users controller
+├── services/           # Business logic
+│   ├── cat_service.py         # Cats service (TheCatAPI)
+│   └── user_service.py        # Users service
+├── repositories/       # Data access
+│   ├── user_repository.py     # MongoDB repository
+│   └── user_repository_interface.py
+├── models/             # Data models
+│   ├── cat.py                 # Cat models
+│   └── user.py                # User models
+├── schemas/            # Pydantic schemas
+│   ├── cat.py                 # REST cat schemas
+│   └── user.py                # REST user schemas
+└── core/               # Configuration and utilities
+    ├── config.py              # Configuration
+    ├── database.py            # MongoDB connection
+    └── security.py            # Password hash, JWT
 ```
 
-## 📊 HTTP Status Codes
+## 🔐 Security Details
 
-| Code | Description |
-|------|-------------|
-| 200 | Success |
-| 201 | Resource created |
-| 400 | Bad request |
-| 401 | Unauthorized |
-| 403 | Forbidden |
-| 404 | Resource not found |
-| 409 | Conflict (duplicate user) |
-| 500 | Internal server error |
+### Password Hashing
+- **Algorithm**: bcrypt with automatic salt
+- **Rounds**: 12 (configurable)
+- **Hash example**: `$2b$12$LQv3c1yqBWVHxkd0LHAkCO...`
 
-## 🐛 Troubleshooting
+### JWT Tokens
+- **Algorithm**: HS256
+- **Expiration**: 30 minutes (configurable)
+- **Claims**: username in `sub` field
 
-### Common issues
+### Username Generation
+- **Format**: `firstname.lastname`
+- **Normalization**: No accents, lowercase letters only
+- **Unique**: If exists, number is added (`juan.perez1`)
 
-1. **MongoDB connection error**:
-   ```bash
-   docker-compose down
-   docker-compose up mongodb
-   # Wait for MongoDB to be ready
-   docker-compose up cats-api
-   ```
+## 📱 Documentation Access
 
-2. **Port already in use**:
-   ```bash
-   # Change ports in docker-compose.yml
-   ports:
-     - "8001:8000"  # Instead of 8000:8000
-   ```
+Once the API is running:
 
-3. **Regenerate containers**:
-   ```bash
-   docker-compose down -v
-   docker-compose up --build
-   ```
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+- **OpenAPI Schema**: http://localhost:8000/openapi.json
+
+
 

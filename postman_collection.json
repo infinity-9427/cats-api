@@ -1,0 +1,288 @@
+{
+  "info": {
+    "name": "Cats API Test Collection",
+    "description": "Complete test collection for the Cats API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health & Info",
+      "item": [
+        {
+          "name": "Root Endpoint",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/"
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/health"
+          }
+        },
+        {
+          "name": "API Documentation",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/docs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cat Breeds",
+      "item": [
+        {
+          "name": "Get All Breeds",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/breeds"
+          }
+        },
+        {
+          "name": "Get Breeds with Limit",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/breeds",
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Persian Breed",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/breeds/pers"
+          }
+        },
+        {
+          "name": "Get Maine Coon",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/breeds/mcoo"
+          }
+        },
+        {
+          "name": "Search Breeds - Maine",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/breeds/search",
+              "query": [
+                {
+                  "key": "q",
+                  "value": "maine"
+                },
+                {
+                  "key": "limit",
+                  "value": "3"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Breeds - Persian",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/breeds/search",
+              "query": [
+                {
+                  "key": "q",
+                  "value": "persian"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Invalid Breed ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/breeds/invalid_id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/user"
+          }
+        },
+        {
+          "name": "Create User - John Doe",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/user",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create User - Jane Smith",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/user",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Jane\",\n  \"last_name\": \"Smith\",\n  \"email\": \"jane.smith@example.com\",\n  \"password\": \"securepass456\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create User - Missing Fields",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/user",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Test\",\n  \"password\": \"short\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login (POST)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/login",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"john.doe\",\n  \"password\": \"password123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (responseCode.code === 200) {",
+                  "    var jsonData = JSON.parse(responseBody);",
+                  "    pm.environment.set(\"token\", jsonData.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login (GET)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/login",
+              "query": [
+                {
+                  "key": "username",
+                  "value": "john.doe"
+                },
+                {
+                  "key": "password",
+                  "value": "password123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Verify Token",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/auth/verify",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Invalid Login",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/login",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"wronguser\",\n  \"password\": \"wrongpass\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Verify Token - No Auth",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/auth/verify"
+          }
+        }
+      ]
+    }
+  ]
+}
