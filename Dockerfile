@@ -26,6 +26,9 @@ RUN pip install --no-cache-dir --upgrade pip \
 # Copy project files
 COPY . .
 
+# Add the app directory to Python path
+ENV PYTHONPATH=/app
+
 # Create a non-root user for Alpine
 RUN adduser -D -s /bin/sh appuser && chown -R appuser:appuser /app
 USER appuser

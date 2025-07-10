@@ -39,8 +39,8 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
-    volumes:
-      - .:/app
+    # volumes:
+    #   - .:/app  # Comment out for production, uncomment for development with proper setup
     networks:
       - cats-api-network
     healthcheck:
