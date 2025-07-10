@@ -1,99 +1,99 @@
 # 🐱 Cats API - Backend Application
 
-Una API REST desarrollada con FastAPI para gestionar información de razas de gatos y usuarios, integrada con [The Cat API](https://thecatapi.com/) y base de datos MongoDB.
+A REST API developed with FastAPI to manage cat breed information and users, integrated with [The Cat API](https://thecatapi.com/) and MongoDB database.
 
-## 🚀 Características
+## 🚀 Features
 
-- **API RESTful** con FastAPI
-- **Base de datos MongoDB** para gestión de usuarios
-- **Integración con The Cat API** para información de razas
-- **Autenticación JWT** para usuarios
-- **Arquitectura limpia** siguiendo principios SOLID
-- **Pruebas unitarias** con pytest
-- **Contenerización** con Docker y Docker Compose
-- **Documentación automática** con Swagger UI
+- **RESTful API** with FastAPI
+- **MongoDB database** for user management
+- **The Cat API integration** for breed information
+- **JWT authentication** for users
+- **Clean architecture** following SOLID principles
+- **Unit testing** with pytest
+- **Containerization** with Docker and Docker Compose
+- **Automatic documentation** with Swagger UI
 
-## 🛠️ Tecnologías Utilizadas
+## 🛠️ Technologies Used
 
 ### Backend Framework
-- **FastAPI** - Framework web moderno y rápido para Python
-- **Uvicorn** - Servidor ASGI para FastAPI
-- **Pydantic** - Validación de datos y serialización
+- **FastAPI** - Modern, fast web framework for Python
+- **Uvicorn** - ASGI server for FastAPI
+- **Pydantic** - Data validation and serialization
 
-### Base de Datos
-- **MongoDB** - Base de datos NoSQL
-- **Motor** - Driver asíncrono de MongoDB para Python
-- **PyMongo** - Driver oficial de MongoDB
+### Database
+- **MongoDB** - NoSQL database
+- **Motor** - Async MongoDB driver for Python
+- **PyMongo** - Official MongoDB driver
 
-### Autenticación y Seguridad
-- **JWT (JSON Web Tokens)** - Para autenticación
-- **bcrypt** - Para hash de contraseñas
-- **python-jose** - Para manejo de JWT
+### Authentication and Security
+- **JWT (JSON Web Tokens)** - For authentication
+- **bcrypt** - For password hashing
+- **python-jose** - For JWT handling
 
-### Integración Externa
-- **httpx** - Cliente HTTP asíncrono para integración con The Cat API
+### External Integration
+- **httpx** - Async HTTP client for The Cat API integration
 
 ### Testing
-- **pytest** - Framework de testing
-- **pytest-asyncio** - Para testing asíncrono
+- **pytest** - Testing framework
+- **pytest-asyncio** - For async testing
 
-### Containerización
-- **Docker** - Para contenerización
-- **Docker Compose** - Para orquestación de servicios
+### Containerization
+- **Docker** - For containerization
+- **Docker Compose** - For service orchestration
 
-## 📋 Requisitos Previos
+## 📋 Prerequisites
 
 - Docker
 - Docker Compose
-- Python 3.11+ (para desarrollo local)
+- Python 3.11+ (for local development)
 
-## 🚀 Instalación y Configuración
+## 🚀 Installation and Setup
 
-### 1. Clonar el repositorio
+### 1. Clone the repository
 ```bash
 git clone <repository-url>
 cd cats-api
 ```
 
-### 2. Configurar variables de entorno
+### 2. Configure environment variables
 ```bash
 cp .env.example .env
-# Editar .env con tus configuraciones
+# Edit .env with your configurations
 ```
 
-### 3. Ejecutar con Docker Compose
+### 3. Run with Docker Compose
 ```bash
-# Construir y ejecutar todos los servicios
+# Build and run all services
 docker-compose up --build
 
-# Ejecutar en segundo plano
+# Run in background
 docker-compose up -d
 
-# Ver logs
+# View logs
 docker-compose logs -f cats-api
 ```
 
-### 4. Acceder a los servicios
+### 4. Access services
 - **API**: http://localhost:8000
-- **Documentación**: http://localhost:8000/docs
+- **Documentation**: http://localhost:8000/docs
 - **MongoDB Express**: http://localhost:8081 (admin/admin)
 
-## 📚 Endpoints de la API
+## 📚 API Endpoints
 
 ### 🏠 General
-| Método | Endpoint | Descripción |
+| Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/` | Página de inicio |
-| GET | `/health` | Estado de salud de la API |
+| GET | `/` | Home page |
+| GET | `/health` | API health status |
 
-### 🐱 Controlador de Gatos
+### 🐱 Cats Controller
 
-#### Obtener todas las razas
+#### Get all breeds
 ```http
 GET /breeds
 ```
 
-**Respuesta exitosa (200)**:
+**Successful response (200)**:
 ```json
 [
   {
@@ -118,20 +118,20 @@ GET /breeds
 ]
 ```
 
-#### Obtener raza por ID
+#### Get breed by ID
 ```http
 GET /breeds/{breed_id}
 ```
 
-**Parámetros**:
-- `breed_id` (string): ID de la raza
+**Parameters**:
+- `breed_id` (string): Breed ID
 
-**Ejemplo**:
+**Example**:
 ```bash
 curl -X GET "http://localhost:8000/breeds/abys"
 ```
 
-**Respuesta exitosa (200)**:
+**Successful response (200)**:
 ```json
 {
   "id": "abys",
@@ -147,22 +147,22 @@ curl -X GET "http://localhost:8000/breeds/abys"
 }
 ```
 
-#### Buscar razas
+#### Search breeds
 ```http
 GET /breeds/search
 ```
 
-**Parámetros de consulta**:
-- `q` (string): Término de búsqueda
-- `limit` (int, opcional): Límite de resultados (default: 10)
-- `page` (int, opcional): Página de resultados (default: 0)
+**Query parameters**:
+- `q` (string): Search term
+- `limit` (int, optional): Result limit (default: 10)
+- `page` (int, optional): Page number (default: 0)
 
-**Ejemplo**:
+**Example**:
 ```bash
 curl -X GET "http://localhost:8000/breeds/search?q=persian&limit=5"
 ```
 
-**Respuesta exitosa (200)**:
+**Successful response (200)**:
 ```json
 {
   "results": [
@@ -179,17 +179,17 @@ curl -X GET "http://localhost:8000/breeds/search?q=persian&limit=5"
 }
 ```
 
-### 👤 Controlador de Usuarios
+### 👤 Users Controller
 
-#### Obtener todos los usuarios
+#### Get all users
 ```http
 GET /users
 ```
 
-**Headers requeridos**:
+**Required headers**:
 - `Authorization: Bearer <token>`
 
-**Respuesta exitosa (200)**:
+**Successful response (200)**:
 ```json
 [
   {
@@ -204,7 +204,7 @@ GET /users
 ]
 ```
 
-#### Crear usuario
+#### Create user
 ```http
 POST /users
 ```
@@ -219,7 +219,7 @@ POST /users
 }
 ```
 
-**Respuesta exitosa (201)**:
+**Successful response (201)**:
 ```json
 {
   "id": "64a1234567890abcdef12345",
@@ -228,11 +228,11 @@ POST /users
   "first_name": "John",
   "last_name": "Doe",
   "created_at": "2023-07-10T10:30:00Z",
-  "message": "Usuario creado exitosamente"
+  "message": "User created successfully"
 }
 ```
 
-#### Iniciar sesión
+#### Login
 ```http
 POST /login
 ```
@@ -245,7 +245,7 @@ POST /login
 }
 ```
 
-**Respuesta exitosa (200)**:
+**Successful response (200)**:
 ```json
 {
   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
@@ -261,15 +261,15 @@ POST /login
 }
 ```
 
-## 🔧 Configuración
+## 🔧 Configuration
 
-### Variables de Entorno
+### Environment Variables
 
 ```env
-# Base de datos
+# Database
 DATABASE_URL=mongodb://admin:password123@mongodb:27017/cats_api?authSource=admin
 
-# API Externa
+# External API
 BASE_URL=https://thecatapi.com
 CATS_API_KEY=your_api_key_here
 
@@ -284,98 +284,96 @@ MONGO_INITDB_ROOT_PASSWORD=password123
 MONGO_INITDB_DATABASE=cats_api
 ```
 
-## 🧪 Pruebas
+## 🧪 Testing
 
-### Ejecutar pruebas unitarias
+### Run unit tests
 ```bash
-# Con Docker
+# With Docker
 docker-compose exec cats-api pytest
 
 # Local
 pytest tests/
 
-# Con cobertura
+# With coverage
 pytest --cov=app tests/
 ```
 
-### Ejemplos de pruebas
+### Testing examples
 ```bash
-# Probar endpoint de salud
+# Test health endpoint
 curl -X GET "http://localhost:8000/health"
 
-# Probar creación de usuario
+# Test user creation
 curl -X POST "http://localhost:8000/users" \
   -H "Content-Type: application/json" \
   -d '{"first_name":"Test","last_name":"User","email":"test@example.com","password":"test123"}'
 
-# Probar login
+# Test login
 curl -X POST "http://localhost:8000/login" \
   -H "Content-Type: application/json" \
   -d '{"username":"test_user","password":"test123"}'
 ```
 
-## 🏗️ Arquitectura
+## 🏗️ Architecture
 
-El proyecto sigue principios de **Clean Architecture** y **SOLID**:
+The project follows **Clean Architecture** and **SOLID** principles:
 
 ```
 app/
-├── controllers/          # Controladores REST
+├── controllers/          # REST controllers
 │   ├── cats_controller.py
 │   └── users_controller.py
-├── services/            # Lógica de negocio
+├── services/            # Business logic
 │   ├── cats_service.py
 │   ├── users_service.py
 │   └── auth_service.py
-├── models/              # Modelos de datos
+├── models/              # Data models
 │   ├── cat_models.py
 │   └── user_models.py
-├── repositories/        # Acceso a datos
+├── repositories/        # Data access
 │   ├── cats_repository.py
 │   └── users_repository.py
-├── utils/              # Utilidades
+├── utils/              # Utilities
 │   ├── database.py
 │   └── security.py
-└── main.py             # Punto de entrada
+└── main.py             # Entry point
 ```
 
-## 📊 Códigos de Estado HTTP
+## 📊 HTTP Status Codes
 
-| Código | Descripción |
-|--------|-------------|
-| 200 | Éxito |
-| 201 | Recurso creado |
-| 400 | Solicitud incorrecta |
-| 401 | No autorizado |
-| 403 | Prohibido |
-| 404 | Recurso no encontrado |
-| 409 | Conflicto (usuario duplicado) |
-| 500 | Error interno del servidor |
+| Code | Description |
+|------|-------------|
+| 200 | Success |
+| 201 | Resource created |
+| 400 | Bad request |
+| 401 | Unauthorized |
+| 403 | Forbidden |
+| 404 | Resource not found |
+| 409 | Conflict (duplicate user) |
+| 500 | Internal server error |
 
 ## 🐛 Troubleshooting
 
-### Problemas comunes
+### Common issues
 
-1. **Error de conexión a MongoDB**:
+1. **MongoDB connection error**:
    ```bash
    docker-compose down
    docker-compose up mongodb
-   # Esperar a que MongoDB esté listo
+   # Wait for MongoDB to be ready
    docker-compose up cats-api
    ```
 
-2. **Puerto ya en uso**:
+2. **Port already in use**:
    ```bash
-   # Cambiar puertos en docker-compose.yml
+   # Change ports in docker-compose.yml
    ports:
-     - "8001:8000"  # En lugar de 8000:8000
+     - "8001:8000"  # Instead of 8000:8000
    ```
 
-3. **Regenerar contenedores**:
+3. **Regenerate containers**:
    ```bash
    docker-compose down -v
    docker-compose up --build
    ```
-
-
 
