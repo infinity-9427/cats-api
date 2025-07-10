@@ -1,0 +1,16 @@
+# Exclude files from Docker build context
+.git
+.gitignore
+README.md
+DOCKER.md
+.env.example
+.pytest_cache
+.coverage
+htmlcov/
+.mypy_cache
+.vscode/
+.idea/
+*.pyc
+__pycache__/
+.DS_Store
+Thumbs.db
