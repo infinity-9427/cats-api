@@ -6,11 +6,6 @@ from main import app
 class TestUserController:
     """Test suite for User Controller - Only functional tests."""
 
-    @pytest.fixture
-    def client(self):
-        """Create test client."""
-        return TestClient(app)
-
     def test_get_users_empty_list(self, client):
         """Test GET /user returns empty list initially."""
         response = client.get("/api/v1/user")
@@ -223,11 +218,6 @@ class TestUserController:
 
 class TestUserControllerIntegration:
     """Integration tests for User Controller - Only functional tests."""
-    
-    @pytest.fixture
-    def client(self):
-        """Create test client."""
-        return TestClient(app)
     
     def test_full_user_workflow(self, client):
         """Test complete user workflow: create -> list -> login."""

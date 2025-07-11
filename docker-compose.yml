@@ -69,6 +69,8 @@ services:
         condition: service_healthy
     networks:
       - cats-api-network
+    profiles:
+      - optional
 
 volumes:
   mongodb_data:

@@ -64,7 +64,7 @@ class CatService:
                 headers=self.headers
             )
             
-            if response.status_code == 404:
+            if response.status_code in [404, 400]:
                 return None
                 
             response.raise_for_status()
