@@ -65,18 +65,3 @@ async def login_user(
         token_type="bearer",
         user=user
     )
-
-
-@router.get("/auth/me", response_model=UserResponse)
-async def get_current_user(
-    current_user: str = Depends(require_authentication),
-    user_service: UserService = Depends(get_user_service)
-):
-    """Get current user information (requires authentication)."""
-    user = await user_service.get_user_by_username(current_user)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
-        )
-    return user
