@@ -22,7 +22,9 @@ help:
 install:
 	@echo "📦 Installing dependencies..."
 	@pip install --upgrade pip
-	@pip install -e .
+	@python -c "import tomllib; f=open('pyproject.toml','rb'); data=tomllib.load(f); f.close(); open('requirements.tmp','w').write('\n'.join(data['project']['dependencies']))"
+	@pip install -r requirements.tmp
+	@rm requirements.tmp
 	@echo "✅ Dependencies installed!"
 
 # Quick tests without coverage (fastest)
@@ -49,6 +51,7 @@ clean:
 	@find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 	@find . -type f -name "*.pyc" -delete 2>/dev/null || true
 	@find . -type d -name "*.egg-info" -exec rm -rf {} + 2>/dev/null || true
+	@rm -rf build/ dist/ .pytest_cache/ .coverage htmlcov/ 2>/dev/null || true
 	@echo "✅ Cleanup complete!"
 
 # Start development server

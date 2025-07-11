@@ -21,7 +21,7 @@ RUN apk update \
 # Install Python dependencies
 COPY pyproject.toml .
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -e .
+    && pip install --no-cache-dir .
 
 # Copy project files
 COPY . .
