@@ -67,22 +67,13 @@ The project uses environment variables for configuration. A `.env` file is inclu
 
 ```bash
 # Database Configuration
-DATABASE_URL=mongodb://admin:password123@mongodb:27017/cats_api?authSource=admin
-MONGO_INITDB_ROOT_USERNAME=admin
-MONGO_INITDB_ROOT_PASSWORD=password123
-MONGO_INITDB_DATABASE=cats_api
-
-# API Configuration
+DATABASE_URL=mongodb://admin:pass@localhost:27017/cats_api?authSource=admin
 BASE_URL=https://api.thecatapi.com/v1
-CATS_API_KEY=your_api_key_here
+CATS_API_KEY=your_api_key
 SECRET_KEY=your-secret-key-change-this-in-production
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 DEBUG=True
-
-# Mongo Express (Database Admin UI)
-MONGO_EXPRESS_USERNAME=admin
-MONGO_EXPRESS_PASSWORD=admin
 ```
 
 > **⚠️ Important**: Change the `SECRET_KEY` and other sensitive values in production!
