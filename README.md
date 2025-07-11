@@ -37,12 +37,7 @@ Complete JWT-based authentication system:
 - **Containerization**: Docker and Docker Compose
 - **Documentation**: Automatic Swagger UI + Authentication Guide
 
-## 🔑 The Cat API Key
-```
-your_api_key
-```
-
-## ⚡ Quick Start for Contributors
+## � Quick Start for Contributors
 
 Perfect for developers who want to **test everything quickly** with real data:
 
@@ -56,34 +51,43 @@ git clone <repository>
 cd cats-api
 ```
 
-### 2. Install Dependencies
+### 2. Configuration
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Edit .env file with your Cat API key
+# Get your free API key from: https://thecatapi.com/signup
+```
+
+### 3. Install Dependencies
 ```bash
 # Create virtual environment
 python3 -m venv .venv
 source .venv/bin/activate
 
-# Install all dependencies
-pip install -r requirements.txt
+# Install all dependencies using modern Python packaging
+make install
 ```
 
-### 3. Start Real Database
+### 4. Start Real Database
 ```bash
 # Start MongoDB in Docker (fresh environment)
 docker-compose up mongodb -d
 ```
 
-### 4. Run All Tests (100% Real Data)
+### 5. Run All Tests (100% Real Data)
 ```bash
 # Run all tests with real MongoDB and Cat API
 make test-quick
 ```
 
-**✅ Expected Result**: All 23 tests pass in ~10 seconds using:
+**✅ Expected Result**: All tests pass in ~10 seconds using:
 - **Real MongoDB** for user operations 
 - **Real Cat API** for breed data
 - **No mocks or dummy data**
 
-### 5. Run with Coverage
+### 6. Run with Coverage
 ```bash
 # Run tests with coverage report
 make test
@@ -106,9 +110,9 @@ This project uses **100% Real Data Integration Testing**:
 - **No Unit Tests**: Focus on integration and end-to-end testing
 
 ### 📊 Test Coverage
-- **23 Tests**: All integration tests with real data
+- **All Tests**: Integration tests with real data
 - **~10 seconds**: Fast execution time
-- **81% Coverage**: Focuses on critical business logic
+- **High Coverage**: Focuses on critical business logic
 
 ### 🔄 Test Environment
 - **Fresh Database**: Cleaned before/after each test
@@ -132,20 +136,13 @@ cd cats-api
 ```
 
 ### 2. Environment Configuration
-The project uses environment variables for configuration. A `.env` file is included with default values:
-
 ```bash
-# Database Configuration
-DATABASE_URL=mongodb://admin:pass@localhost:27017/cats_api?authSource=admin
-BASE_URL=https://api.thecatapi.com/v1
-CATS_API_KEY=your_api_key
-SECRET_KEY=your-secret-key-change-this-in-production
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-DEBUG=True
-```
+# Copy environment template
+cp .env.example .env
 
-> **⚠️ Important**: Change the `SECRET_KEY` and other sensitive values in production!
+# Edit .env file with your Cat API key
+# Get your free API key from: https://thecatapi.com/signup
+```
 
 ### 3. Run with Docker Compose (Recommended)
 ```bash
@@ -167,23 +164,44 @@ docker-compose down
 - **Swagger Documentation**: http://localhost:8000/docs
 - **ReDoc Documentation**: http://localhost:8000/redoc
 
-### 5. Quick Test (Recommended)
+### 5. Local Development (Alternative)
 ```bash
-# Install dependencies
-pip install -r requirements.txt
+# Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
 
-# Start MongoDB (in background)
+# Install dependencies
+make install
+
+# Start MongoDB only
 docker-compose up mongodb -d
 
-# Run tests (fast!)
+# Run tests
 make test-quick    # Quick tests without coverage
 make test          # Full tests with coverage
+make test-cov      # Detailed coverage report
 
-# Alternative methods
-./run_tests.sh     # Shell script approach
+# Start development server
+make dev           # Auto-reload server
 ```
 
-## 📊 Useful Docker Commands
+## 📊 Available Commands
+
+```bash
+# View all available commands
+make help
+
+# Available commands:
+make install      # Install dependencies from pyproject.toml
+make test-quick   # Run tests without coverage (fastest)
+make test         # Run all tests with coverage
+make test-cov     # Run tests with detailed coverage report
+make clean        # Clean cache files and build artifacts
+make dev          # Start development server
+make help         # Show help message
+```
+
+## � Docker Commands
 
 ```bash
 # View active containers

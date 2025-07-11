@@ -17,10 +17,7 @@ class Settings:
     
     # Cat API settings
     CATS_API_BASE_URL: str = os.getenv("BASE_URL", "https://api.thecatapi.com/v1")
-    CATS_API_KEY: str = os.getenv(
-        "CATS_API_KEY", 
-        "live_JBT0Ah0Nt12iyl2IpjQVLDWjcLk0GQwf4zI9wBMfmfejKmcC31mOJp4yJz5TsOUP"
-    )
+    CATS_API_KEY: str = os.getenv("CATS_API_KEY", "")
     
     # Security settings
     SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-here")

@@ -19,9 +19,9 @@ RUN apk update \
     && rm -rf /var/cache/apk/*
 
 # Install Python dependencies
-COPY requirements.txt .
+COPY pyproject.toml .
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+    && pip install --no-cache-dir -e .
 
 # Copy project files
 COPY . .
