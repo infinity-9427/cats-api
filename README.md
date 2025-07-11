@@ -1,6 +1,12 @@
 # 🐱 Cats API - Backend Application
 
-REST API developed with **Python FastAPI** and **MongoDB** to manage cat breed information and users, integrated with [The Cat API](https://thecatapi.com/).
+REST API developed with **Python FastAPI** and **MongoDB** to ### 4. Access services
+- **API**: http://localhost:8000
+- **Swagger Documentation**: http://localhost:8000/docs
+- **ReDoc Documentation**: http://localhost:8000/redoc
+- **MongoDB Admin UI**: http://localhost:8081 (mongo-express)
+  - Username: `admin`
+  - Password: `admin`ge cat breed information and users, integrated with [The Cat API](https://thecatapi.com/).
 
 ## 📋 Project Requirements
 
@@ -16,8 +22,7 @@ Connected to the public API https://thecatapi.com/ with the following actions:
 User management with MongoDB with the following actions:
 - `GET /user` - List of users
 - `POST /user` - Create user (auto-generated unique username)
-- `GET /login` - Login validation against MongoDB
-- `POST /login` - Login with JSON body (REST standard)
+- `POST /login` - Login with JSON body
 
 ### 🔐 **Authentication System**
 Complete JWT-based authentication system:
@@ -57,7 +62,32 @@ git clone <repository-url>
 cd cats-api
 ```
 
-### 2. Run with Docker Compose (Recommended)
+### 2. Environment Configuration
+The project uses environment variables for configuration. A `.env` file is included with default values:
+
+```bash
+# Database Configuration
+DATABASE_URL=mongodb://admin:password123@mongodb:27017/cats_api?authSource=admin
+MONGO_INITDB_ROOT_USERNAME=admin
+MONGO_INITDB_ROOT_PASSWORD=password123
+MONGO_INITDB_DATABASE=cats_api
+
+# API Configuration
+BASE_URL=https://api.thecatapi.com/v1
+CATS_API_KEY=your_api_key_here
+SECRET_KEY=your-secret-key-change-this-in-production
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+DEBUG=True
+
+# Mongo Express (Database Admin UI)
+MONGO_EXPRESS_USERNAME=admin
+MONGO_EXPRESS_PASSWORD=admin
+```
+
+> **⚠️ Important**: Change the `SECRET_KEY` and other sensitive values in production!
+
+### 3. Run with Docker Compose (Recommended)
 ```bash
 # Build and run all services
 docker-compose up --build
@@ -72,12 +102,12 @@ docker-compose logs -f cats-api
 docker-compose down
 ```
 
-### 3. Access services
+### 4. Access services
 - **API**: http://localhost:8000
 - **Swagger Documentation**: http://localhost:8000/docs
 - **ReDoc Documentation**: http://localhost:8000/redoc
 
-### 4. Quick Test (Optional)
+### 5. Quick Test (Optional)
 ```bash
 # Verify everything works - choose your preferred method
 make test-quick    # Custom command (recommended)
@@ -96,29 +126,34 @@ docker-compose logs -f mongodb
 # Access MongoDB container
 docker exec -it cats-api-mongodb mongosh cats_api
 
+# Access MongoDB with authentication
+docker-compose exec mongodb mongosh --username admin --password password123 --authenticationDatabase admin
+
 # Rebuild only the API
 docker-compose build cats-api
 
 # Restart a service
 docker-compose restart cats-api
 
-# Clean volumes (⚠️ deletes data)
+# Clean volumes (⚠️ deletes data and recreates default users)
 docker-compose down -v
 ```
 
 ## 👥 Default Users
 
-The system includes pre-configured test users:
+The system automatically creates pre-configured test users during MongoDB initialization:
 
 ### Admin User
 - **Username**: `admin`
-- **Password**: `admin123`
+- **Password**: `password123`
 - **Email**: `admin@example.com`
 
 ### Test User
 - **Username**: `john.doe`
 - **Password**: `password123`
 - **Email**: `john.doe@example.com`
+
+> **🔧 Note**: These users are created automatically when the MongoDB container starts with an empty database via the `init-mongo.js` script.
 
 ## 🔐 Password Security
 
@@ -230,14 +265,9 @@ curl -X POST "http://localhost:8000/api/v1/user" \
 
 > **📝 Note**: The `username` is automatically generated as `firstname.lastname` and guaranteed to be unique. If it already exists, a number is added (e.g., `maria.garcia1`).
 
-#### 3. Login Endpoints
+#### 3. Login Endpoint
 
-##### GET /login - Login validation (Query Parameters)
-```bash
-curl -X GET "http://localhost:8000/api/v1/login?username=maria.garcia&password=mipassword123"
-```
-
-##### POST /login - Login validation (JSON Body - Recommended)
+##### POST /login - User Authentication
 ```bash
 curl -X POST "http://localhost:8000/api/v1/login" \
   -H "Content-Type: application/json" \
@@ -288,7 +318,6 @@ curl -H "Authorization: Bearer <your-token>" "http://localhost:8000/api/v1/auth/
 ```
 
 > **📚 For complete authentication documentation, see [AUTHENTICATION.md](AUTHENTICATION.md)**
-```
 
 ## 🧪 Testing
 

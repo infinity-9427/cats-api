@@ -12,7 +12,7 @@ services:
       MONGO_INITDB_DATABASE: cats_api
     volumes:
       - mongodb_data:/data/db
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:Z
     networks:
       - cats-api-network
     healthcheck:
@@ -31,11 +31,12 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=mongodb://admin:password123@mongodb:27017/cats_api?authSource=admin
-      - BASE_URL=https://api.thecatapi.com/v1
-      - CATS_API_KEY=live_JBT0Ah0Nt12iyl2IpjQVLDWjcLk0GQwf4zI9wBMfmfejKmcC31mOJp4yJz5TsOUP
-      - SECRET_KEY=your-secret-key
-      - ALGORITHM=HS256
-      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+      - BASE_URL=${BASE_URL}
+      - CATS_API_KEY=${CATS_API_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - DEBUG=${DEBUG}
     depends_on:
       mongodb:
         condition: service_healthy

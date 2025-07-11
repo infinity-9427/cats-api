@@ -1,11 +1,11 @@
-from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from app.schemas.user import UserCreate, UserResponse, UserLogin, Token, TokenInfo
+from typing import List
+from fastapi import APIRouter, Depends, HTTPException, status
+from app.schemas.user import UserCreate, UserResponse, UserLogin, Token
 from app.services.user_service import UserService
 from app.repositories.user_repository import MongoUserRepository
 from app.core.database import get_database
-from app.core.security import create_access_token, get_current_user_username, require_authentication, get_token_payload
-from datetime import timedelta, datetime
+from app.core.security import create_access_token, require_authentication
+from datetime import timedelta
 from app.core.config import settings
 
 
@@ -40,40 +40,12 @@ async def create_user(
         )
 
 
-@router.get("/login", response_model=Token)
-async def login_user_get(
-    username: str = Query(..., description="Username"),
-    password: str = Query(..., description="Password"),
-    user_service: UserService = Depends(get_user_service)
-):
-    """Login user and return JWT token (GET method for convenience)."""
-    user = await user_service.authenticate_user(username, password)
-    
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
-    
-    return Token(
-        access_token=access_token,
-        token_type="bearer",
-        user=user
-    )
-
-
 @router.post("/login", response_model=Token)
-async def login_user_post(
+async def login_user(
     user_login: UserLogin,
     user_service: UserService = Depends(get_user_service)
 ):
-    """Login user and return JWT token (POST method - REST standard)."""
+    """Login user and return JWT token."""
     user = await user_service.authenticate_user(user_login.username, user_login.password)
     
     if not user:
@@ -95,25 +67,6 @@ async def login_user_post(
     )
 
 
-@router.get("/auth/verify", response_model=dict)
-async def verify_token(
-    current_user: Optional[str] = Depends(get_current_user_username)
-):
-    """Verify if the current token is valid (useful for frontend)."""
-    if current_user:
-        return {
-            "valid": True,
-            "username": current_user,
-            "message": "Token is valid"
-        }
-    else:
-        return {
-            "valid": False,
-            "username": None,
-            "message": "No valid token provided"
-        }
-
-
 @router.get("/auth/me", response_model=UserResponse)
 async def get_current_user(
     current_user: str = Depends(require_authentication),
@@ -127,19 +80,3 @@ async def get_current_user(
             detail="User not found"
         )
     return user
-
-
-@router.get("/auth/token-info", response_model=TokenInfo)
-async def get_token_info(
-    current_user: str = Depends(require_authentication),
-    user_service: UserService = Depends(get_user_service)
-):
-    """Get token information (for debugging/admin purposes)."""
-    # This would typically get the token from the Authorization header
-    # For now, we'll create a basic response
-    return TokenInfo(
-        username=current_user,
-        expires_at=datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
-        issued_at=datetime.utcnow(),
-        is_valid=True
-    )
