@@ -1,50 +1,75 @@
-// MongoDB initialization script for cats_api database
-// This script runs automatically when MongoDB starts with an empty database
-// Creates default users: admin and john.doe (both with password: password123)
-// DO NOT MODIFY unless you understand MongoDB initialization process
 
-print('Starting MongoDB initialization...');
-
-// Switch to cats_api database
 db = db.getSiblingDB('cats_api');
+print('📍 Switched to database: ' + db.getName());
 
-print('Creating users collection...');
-// Create users collection with indexes
+try {
+    db.users.drop();
+    print('🗑️ Dropped existing users collection');
+} catch (error) {
+    print('ℹ️ No existing users collection to drop');
+}
+
+// Create users collection with proper indexes
 db.createCollection('users');
+print('✅ Created users collection');
+
+// Create indexes
 db.users.createIndex({ "username": 1 }, { unique: true });
 db.users.createIndex({ "email": 1 });
+print('📇 Created indexes on username (unique) and email');
 
-print('Inserting default users...');
+print('👥 Inserting default users...');
 
-// Insert default user "john.doe" 
-// Password hash for "password123" using bcrypt
-const johnResult = db.users.insertOne({
-  "first_name": "John",
-  "last_name": "Doe", 
-  "username": "john.doe",
-  "password": "$2b$12$l8PQqVquzyMRLlKZwbpwZ.Ww7a29VJhJIo4OrhoanrwloR0VyJ8qm", // password123
-  "email": "john.doe@example.com",
-  "created_at": new Date(),
-  "updated_at": new Date()
-});
-
-print('John Doe user created with ID: ' + johnResult.insertedId);
+// Fresh bcrypt hash for "password123" - verified working hash
+const passwordHash = "$2b$12$R7d1kkqQgJI68HitAnD4pODo8ij6wqF3c4Q8DTy75n1BtiuuBAhay";
 
 // Insert admin user
-const adminResult = db.users.insertOne({
-  "first_name": "Admin",
-  "last_name": "User", 
-  "username": "admin",
-  "password": "$2b$12$l8PQqVquzyMRLlKZwbpwZ.Ww7a29VJhJIo4OrhoanrwloR0VyJ8qm", // password123
-  "email": "admin@example.com",
-  "created_at": new Date(),
-  "updated_at": new Date()
-});
+try {
+    const adminResult = db.users.insertOne({
+        "first_name": "Admin",
+        "last_name": "User", 
+        "username": "admin",
+        "password": passwordHash,
+        "email": "admin@example.com",
+        "created_at": new Date(),
+        "updated_at": new Date()
+    });
+    print('✅ Admin user created with ID: ' + adminResult.insertedId);
+} catch (error) {
+    print('❌ Error creating admin user: ' + error);
+}
 
-print('Admin user created with ID: ' + adminResult.insertedId);
+// Insert default user "john.doe" 
+try {
+    const johnResult = db.users.insertOne({
+        "first_name": "John",
+        "last_name": "Doe", 
+        "username": "john.doe",
+        "password": passwordHash,
+        "email": "john.doe@example.com",
+        "created_at": new Date(),
+        "updated_at": new Date()
+    });
+    print('✅ John Doe user created with ID: ' + johnResult.insertedId);
+} catch (error) {
+    print('❌ Error creating john.doe user: ' + error);
+}
 
-print('Database initialization completed successfully!');
-print('Default users created:');
-print('- john.doe (password: password123)');
-print('- admin (password: password123)');
-print('Total users in database: ' + db.users.countDocuments());
+print('📊 Database initialization completed!');
+print('🔐 Default users created with password: password123');
+
+// Count and display users
+const userCount = db.users.countDocuments();
+print('👤 Total users in database: ' + userCount);
+
+if (userCount > 0) {
+    print('📋 User list:');
+    // Show created users (without passwords)
+    db.users.find({}, {password: 0}).forEach(user => {
+        print('   - ' + user.username + ' (' + user.email + ') - ID: ' + user._id);
+    });
+} else {
+    print('⚠️ Warning: No users found in database after initialization!');
+}
+
+print('🎉 MongoDB initialization script completed successfully!');
