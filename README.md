@@ -72,8 +72,8 @@ make install
 
 ### 4. Start Real Database
 ```bash
-# Start MongoDB in Docker (fresh environment)
-docker-compose up mongodb -d
+# Start Docker Services included MongoDB (fresh environment)
+docker-compose up --build -d
 ```
 
 ### 5. Run All Tests (100% Real Data)
@@ -93,21 +93,9 @@ make test-quick
 make test
 ```
 
-## 🧪 Testing Philosophy
+## 🧪 Testing 
 
-This project uses **100% Real Data Integration Testing**:
 
-### ✅ What We Test
-- **Real MongoDB Operations**: Create, read, authenticate users in actual database
-- **Real Cat API Integration**: Fetch breeds, search, handle errors from live API
-- **Real HTTP Endpoints**: All API routes tested via FastAPI TestClient
-- **Real Data Validation**: Pydantic schemas, password hashing, JWT tokens
-- **Real Error Handling**: 404s, 401s, validation errors with actual API responses
-
-### ❌ What We Don't Use
-- **No Mocks**: No mocked services or fake responses
-- **No Dummy Data**: No hardcoded or simulated data
-- **No Unit Tests**: Focus on integration and end-to-end testing
 
 ### 📊 Test Coverage
 - **All Tests**: Integration tests with real data
